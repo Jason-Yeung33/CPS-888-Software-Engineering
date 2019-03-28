@@ -78,10 +78,33 @@ public class Server extends javax.swing.JFrame
                     switch(SplitData[2])
                     {
                         case "T":
-
+                            if(SplitData[1].contains(">"))
+                            {
+                                String[] SplitData2 = SplitData[1].split(">");
+                                if(!SplitData2[0].equals("ALL"))
+                                {
+                                    privateMessage(Data, SplitData2[0]);
+                                }
+                                else
+                                {
+                                    sendAll(Data);
+                                }
+                            }
+                            else
+                            {
                                 sendAll(Data);
+                            }
                         break;
 
+                        case "D":
+                            sendAll((SplitData[0] + ":logged out." + ":" + "T"));
+                            RemoveClient(SplitData[0]);
+                        break;
+
+                        case "C":
+                            sendAll((SplitData[0] + ":" + SplitData[1] + ":" + "T"));
+                            AddClient(SplitData[0]);
+                        break;
 
                         default: 
                             ServerField.append("Request not valid\n");
@@ -102,7 +125,22 @@ public class Server extends javax.swing.JFrame
 	} 
     }
 
-
+    public void privateMessage(String Data, String username) 
+    {
+	Iterator it = ClientID.iterator();       
+            try 
+            {
+                PrintWriter PrintWriter = (PrintWriter) ClientID.get(userNames.indexOf(username));
+		PrintWriter.println(Data);
+		ServerField.append(">>Sent: " + Data + "\n\n");
+                PrintWriter.flush();
+                ServerField.setCaretPosition(ServerField.getDocument().getLength());
+            } 
+            catch (Exception ex) 
+            {
+		ServerField.append("ERROR\n");
+            }
+    }
     
     public void sendAll(String Data) 
     {
@@ -152,7 +190,7 @@ public class Server extends javax.swing.JFrame
         }
         sendAll("Server: :Done");
     }
-    
+ 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

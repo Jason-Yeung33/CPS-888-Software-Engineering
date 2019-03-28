@@ -83,7 +83,7 @@ public class Client extends javax.swing.JFrame
            }
             catch(Exception ex) 
            { 
-               Chat_Box.append("ERROR\n");
+               Chat_Box.append("Not connected to server.\n");
            }
         }
     }
@@ -123,7 +123,7 @@ public class Client extends javax.swing.JFrame
     public void ClientDisconnect(){
         try 
         {
-            Chat_Box.append("ClientDisconnected.\n");
+            Chat_Box.append("Client Disconnected.\n");
             ClientSocket.close();
         } catch(Exception ex) {
             Chat_Box.append("ERROR\n");
@@ -379,7 +379,7 @@ public class Client extends javax.swing.JFrame
         String password = String.valueOf(Password_Field.getPassword());
         
         //create select query to check if ClientName & password are in db
-        String query = "SELECT * FROM `user_base` WHERE `ClientName` = ? AND `password` = ?";
+        String query = "SELECT * FROM `user_base` WHERE `username` = ? AND `password` = ?";
         
         //Check if ClientName or password fields are empty
         if(ClientName.trim().equals("")){
@@ -503,7 +503,7 @@ public class Client extends javax.swing.JFrame
             String password = String.valueOf(Password_Field.getPassword());
         
             //create select query to check if ClientName & password are in db
-            String query = "SELECT * FROM `user_base` WHERE `ClientName` = ? AND `password` = ?";
+            String query = "SELECT * FROM `user_base` WHERE `username` = ? AND `password` = ?";
         
             //Check if ClientName or password fields are empty
             if(ClientName.trim().equals("")){

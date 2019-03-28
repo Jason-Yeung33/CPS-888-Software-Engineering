@@ -125,7 +125,34 @@ public class Server extends javax.swing.JFrame
         } 
     }
     
- 
+    public void AddClient (String username) 
+    {
+        userNames.add(username);
+        ServerField.append(username + " online\n");
+        String[] List = new String[(userNames.size())];
+        userNames.toArray(List);
+
+        for (String x:List) 
+        {
+            sendAll(x + ": :C");
+        }
+        sendAll("Server: :Done");
+    }
+    
+    public void RemoveClient (String username) 
+    {
+        userNames.remove(username);
+        ServerField.append(username + " offline\n");
+        String[] List = new String[(userNames.size())];
+        userNames.toArray(List);
+
+        for (String x:List) 
+        {
+            sendAll(x + ": :C");
+        }
+        sendAll("Server: :Done");
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

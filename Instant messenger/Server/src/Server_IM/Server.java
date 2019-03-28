@@ -125,7 +125,6 @@ public class Server extends javax.swing.JFrame
         } 
     }
     
-
  
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -133,6 +132,9 @@ public class Server extends javax.swing.JFrame
 
         jScrollPane1 = new javax.swing.JScrollPane();
         ServerField = new javax.swing.JTextArea();
+        OnlineUsers_Button = new javax.swing.JButton();
+        Clear_Button = new javax.swing.JButton();
+        ChatServer = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Chatroom");
@@ -148,25 +150,70 @@ public class Server extends javax.swing.JFrame
         ServerField.setRows(5);
         jScrollPane1.setViewportView(ServerField);
 
+        OnlineUsers_Button.setText("Online Users");
+        OnlineUsers_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                OnlineUsers_ButtonActionPerformed(evt);
+            }
+        });
+
+        Clear_Button.setText("Clear");
+        Clear_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Clear_ButtonActionPerformed(evt);
+            }
+        });
+
+        ChatServer.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        ChatServer.setText("LetsTalk Server");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(OnlineUsers_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(Clear_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(ChatServer)
+                .addGap(126, 126, 126))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(58, 58, 58)
+                .addContainerGap()
+                .addComponent(ChatServer)
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
-                .addGap(61, 61, 61))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Clear_Button)
+                    .addComponent(OnlineUsers_Button))
+                .addGap(27, 27, 27))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void OnlineUsers_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OnlineUsers_ButtonActionPerformed
+        ServerField.append("\nList of Users that are Online: \n");
+        for (String x : userNames)
+        {
+            ServerField.append(x + "\n");
+        }    
+        
+    }//GEN-LAST:event_OnlineUsers_ButtonActionPerformed
+
+    private void Clear_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Clear_ButtonActionPerformed
+        ServerField.setText("");
+    }//GEN-LAST:event_Clear_ButtonActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         setLocationRelativeTo(null);
@@ -174,6 +221,9 @@ public class Server extends javax.swing.JFrame
 
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel ChatServer;
+    private javax.swing.JButton Clear_Button;
+    private javax.swing.JButton OnlineUsers_Button;
     private javax.swing.JTextArea ServerField;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables

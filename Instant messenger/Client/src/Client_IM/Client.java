@@ -51,6 +51,14 @@ public class Client extends javax.swing.JFrame
                             Chat_Box.setCaretPosition(Chat_Box.getDocument().getLength());
                         break;
                         
+                        case "C":
+                            Chat_Box.removeAll();
+                            AddClient(SplitData[0]);
+                        break;
+                        
+                        case"D":
+                            RemoveClient(SplitData[0]);
+                        break; 
                         
                         case "Done": 
                            
@@ -71,6 +79,13 @@ public class Client extends javax.swing.JFrame
         }
     }
 
+    public void AddClient(String data){
+         userNames.add(data);
+    }
+    
+    public void RemoveClient(String data){
+         Chat_Box.append(data + " is offline.\n");
+    }
     
     public void SendData(){
          String[] tempList = new String[(userNames.size())];
@@ -92,6 +107,17 @@ public class Client extends javax.swing.JFrame
         }
     }
     
+        public void ClientDisconnect(){
+        try 
+        {
+            Chat_Box.append("ClientDisconnected.\n");
+            ClientSocket.close();
+        } catch(Exception ex) {
+            Chat_Box.append("ERROR\n");
+        }
+        ClientOnline = false;
+
+    }
 
       
     @SuppressWarnings("unchecked")

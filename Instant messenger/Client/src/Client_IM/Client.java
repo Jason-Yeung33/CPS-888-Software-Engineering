@@ -1,5 +1,6 @@
 package Client_IM;
 
+import instant.messenger.My_Connection;
 import java.awt.event.KeyEvent;
 import java.net.*;
 import java.io.*;
@@ -45,9 +46,17 @@ public class Client extends javax.swing.JFrame
                     switch(SplitData[2])
                     {
                         case "T":
-
+                            if(SplitData[1].contains(">"))
+                            {
+                                SplitData2 = SplitData[1].split(">");
+                                System.out.println("SplitData2[0]: "+SplitData2[0]);
+                                System.out.println("SplitData2[1]: "+SplitData2[1]);
+                                Chat_Box.append("[WHISPER] " + SplitData[0] + ": " + SplitData2[1] + "\n");
+                            }
+                         else
+                            {
                                 Chat_Box.append(SplitData[0] + ": " + SplitData[1] + "\n");
-                            
+                            }
                             Chat_Box.setCaretPosition(Chat_Box.getDocument().getLength());
                         break;
                         
@@ -362,7 +371,65 @@ public class Client extends javax.swing.JFrame
 
     private void User_LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_User_LoginActionPerformed
         
+        PreparedStatement pst;
+        ResultSet rs; 
         
+        //get username & password
+        ClientName = Username_Field.getText();
+        String password = String.valueOf(Password_Field.getPassword());
+        
+        //create select query to check if ClientName & password are in db
+        String query = "SELECT * FROM `user_base` WHERE `ClientName` = ? AND `password` = ?";
+        
+        //Check if ClientName or password fields are empty
+        if(ClientName.trim().equals("")){
+            JOptionPane.showMessageDialog(null, "Enter Your Username", "Username Field Empty", 2);
+        }
+        else if(password.trim().equals("")){
+            JOptionPane.showMessageDialog(null, "Enter Your Password", "Password Field Empty", 2);
+        }
+        else{
+            try{
+                pst = My_Connection.getConnection().prepareStatement(query);
+            
+                pst.setString(1, ClientName);
+                pst.setString(2, password);
+                rs = pst.executeQuery();     
+                
+                if(rs.next()){ 
+                    if(ClientOnline == false){
+                        ClientName = Username_Field.getText();
+                        Username_Field.setEditable(true);                   
+                    
+                        try{
+                            ClientSocket = new Socket("localhost", 9999);
+                             InputStreamReader streamreader = new InputStreamReader(ClientSocket.getInputStream());
+                            BufferReader = new BufferedReader(streamreader);
+                            PrintWriter = new PrintWriter(ClientSocket.getOutputStream());
+                            PrintWriter.println(ClientName + ":logged in. :C");
+                            PrintWriter.flush();
+                            ClientOnline = true;
+                            Username_Field.setEditable(false);
+                            Password_Field.setEditable(false);
+                        }
+                        catch (Exception ex){
+                            Chat_Box.append("Cannot Connect! Try Again. \n");
+                            Username_Field.setEditable(true);
+                        }
+                    }else if(ClientOnline == true){
+                        Chat_Box.append("You are already connected. \n");
+                    }            
+                }else{
+                    //error message
+                    JOptionPane.showMessageDialog(null, "Invalid Username or Password", "Login Error", 2);
+                }
+            }catch (SQLException ex){
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }   
+            
+            Thread IncomingReader = new Thread(new ClientCommunication());
+            IncomingReader.start();
+        } 
     }//GEN-LAST:event_User_LoginActionPerformed
 
     private void Logout_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Logout_ButtonActionPerformed
@@ -427,7 +494,64 @@ public class Client extends javax.swing.JFrame
     }//GEN-LAST:event_Send_ButtonActionPerformed
 
     private void Password_FieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Password_FieldKeyPressed
-    
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+            PreparedStatement pst;
+            ResultSet rs; 
+        
+            //get ClientName & password
+            ClientName = Username_Field.getText();
+            String password = String.valueOf(Password_Field.getPassword());
+        
+            //create select query to check if ClientName & password are in db
+            String query = "SELECT * FROM `user_base` WHERE `ClientName` = ? AND `password` = ?";
+        
+            //Check if ClientName or password fields are empty
+            if(ClientName.trim().equals("")){
+                JOptionPane.showMessageDialog(null, "Enter Your Username", "Username Field Empty", 2);
+            }
+            else if(password.trim().equals("")){
+                JOptionPane.showMessageDialog(null, "Enter Your Password", "Password Field Empty", 2);
+            }
+            else{
+                try{
+                    pst = My_Connection.getConnection().prepareStatement(query);
+            
+                    pst.setString(1, ClientName);
+                    pst.setString(2, password);
+                    rs = pst.executeQuery();     
+                
+                    if(rs.next()){ 
+                        if (ClientOnline == false){
+                            ClientName = Username_Field.getText();
+                            Username_Field.setEditable(true);                   
+                    
+                            try{
+                                ClientSocket = new Socket("localhost", 9999);
+                                InputStreamReader streamreader = new InputStreamReader(ClientSocket.getInputStream());
+                                BufferReader = new BufferedReader(streamreader);
+                                PrintWriter = new PrintWriter(ClientSocket.getOutputStream());
+                                PrintWriter.println(ClientName + ":logged in. :C");
+                                PrintWriter.flush();
+                                ClientOnline = true;
+                            }
+                            catch (Exception ex){
+                                Chat_Box.append("Cannot Connect! Try Again. \n");
+                                Guest_Field.setEditable(true);
+                            }     
+                        }else if(ClientOnline == true){
+                            Chat_Box.append("You are already connected. \n");
+                        }                             
+                    }else{
+                        //error message
+                        JOptionPane.showMessageDialog(null, "Invalid Username or Password", "Login Error", 2);
+                    }
+                }catch (SQLException ex){
+                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                }       
+                Thread IncomingReader = new Thread(new ClientCommunication());
+                IncomingReader.start();
+            }
+        }   
     }//GEN-LAST:event_Password_FieldKeyPressed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing

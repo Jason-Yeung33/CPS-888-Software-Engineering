@@ -37,11 +37,33 @@ public class Server extends javax.swing.JFrame
    
    public class ServerConnect implements Runnable 
     {
+       
         @Override
         public void run() 
         {
             userNames = new ArrayList(); 
             ClientID = new ArrayList();
+            
+                    //Generate key
+            try 
+            {
+                key = KeyGenerator.getInstance("DES").generateKey();
+                 System.out.println(key);
+                         
+                //Create Cipher objects using .getInstance Methods with DES
+                encrypt = Cipher.getInstance("DES");
+                decrypt = Cipher.getInstance("DES");
+
+                //Initialize Cipher modes with generated key
+                //  ENCRYPT_MODE = Encryption of Data
+                //  DECRYPT_MODE = Descryption o Data
+                encrypt.init(Cipher.ENCRYPT_MODE, key);
+                decrypt.init(Cipher.DECRYPT_MODE, key);
+            }
+            catch (Exception ex)
+            {
+                ServerField.append("ERROR\n");
+            }
             
             try 
             {
@@ -76,24 +98,7 @@ public class Server extends javax.swing.JFrame
                 ServerField.append("ERROR\n");
             }
             
-        //Generate key
-        try 
-            {
-                key = KeyGenerator.getInstance("DES").generateKey();
-                //Create Cipher objects using .getInstance Methods with DES
-                encrypt = Cipher.getInstance("DES");
-                decrypt = Cipher.getInstance("DES");
 
-                //Initialize Cipher modes with generated key
-                //  ENCRYPT_MODE = Encryption of Data
-                //  DECRYPT_MODE = Descryption o Data
-                encrypt.init(Cipher.ENCRYPT_MODE, key);
-                decrypt.init(Cipher.DECRYPT_MODE, key);
-            }
-        catch (Exception ex)
-            {
-                ServerField.append("ERROR\n");
-            }
        }
 
        @Override

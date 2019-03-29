@@ -1,5 +1,9 @@
 package Client_IM;
 
+import javax.crypto.*;
+import java.security.*;
+import javax.crypto.spec.DESKeySpec;
+
 import instant.messenger.My_Connection;
 import java.awt.event.KeyEvent;
 import java.net.*;
@@ -20,7 +24,15 @@ public class Client extends javax.swing.JFrame
     Socket ClientSocket;
     BufferedReader BufferReader;
     ArrayList<String> userNames = new ArrayList();    
-    
+    String Stringkey= "com.sun.crypto.provider.DESKey@fffe7840";
+    SecretKey key;
+    Cipher encrypt;
+    Cipher decrypt;
+    String ciphertext;
+    String cleartext;
+    byte[] cleartext_Bytes;
+    byte[] ciphertext_Bytes;
+   
     public Client(){
         initComponents();
     }
@@ -38,6 +50,33 @@ public class Client extends javax.swing.JFrame
             String[] SplitData;
             String stream, done = "Done";
             String[] SplitData2;
+            
+            try 
+            {
+                //key = KeyGenerator.getInstance("DES").generateKey();
+                System.out.println(Stringkey);
+                         
+                DESKeySpec dks = new DESKeySpec(Stringkey.getBytes());
+                SecretKeyFactory skf = SecretKeyFactory.getInstance("DES");
+                key = skf.generateSecret(dks);
+                System.out.println(key);
+                 
+                //Create Cipher objects using .getInstance Methods with DES
+                encrypt = Cipher.getInstance("DES");
+                decrypt = Cipher.getInstance("DES");
+
+                //Initialize Cipher modes with generated key
+                //  ENCRYPT_MODE = Encryption of Data
+                //  DECRYPT_MODE = Descryption o Data
+                encrypt.init(Cipher.ENCRYPT_MODE, key);
+                decrypt.init(Cipher.DECRYPT_MODE, key);
+            }
+            catch (Exception ex)
+            {
+                Chat_Box.append("ERROR\n");
+            }
+            
+            
             try 
             {
                 while ((stream = BufferReader.readLine()) != null) 
@@ -112,7 +151,10 @@ public class Client extends javax.swing.JFrame
             String bye = (ClientName + ":logged out. :D");
         
             try{
-                PrintWriter.println(bye); 
+                cleartext_Bytes = bye.getBytes("UTF8");
+                ciphertext_Bytes= encrypt.doFinal(cleartext_Bytes);
+                ciphertext = new sun.misc.BASE64Encoder().encode(ciphertext_Bytes);
+                PrintWriter.println(ciphertext); 
                 PrintWriter.flush();             
             }catch (Exception e){
                 Chat_Box.append("ERROR\n");

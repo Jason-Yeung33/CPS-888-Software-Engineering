@@ -187,7 +187,7 @@ public class Server extends javax.swing.JFrame
                 ciphertext = new sun.misc.BASE64Encoder().encode(ciphertext_Bytes);
                 PrintWriter PrintWriter = (PrintWriter) ClientID.get(userNames.indexOf(username));
 		PrintWriter.println(ciphertext);
-		ServerField.append(">>Sent Decrypted: " + Data + "\n\n");
+		ServerField.append(">>Sent Decrypted: " + Data + "\n");
                 ServerField.append(">>Sent Encrypted: " + ciphertext + "\n\n");
                 PrintWriter.flush();
                 ServerField.setCaretPosition(ServerField.getDocument().getLength());
@@ -211,7 +211,7 @@ public class Server extends javax.swing.JFrame
                
                 PrintWriter writer = (PrintWriter) it.next();
 		writer.println(ciphertext);
-		ServerField.append(">>Sent Decrypted: " + Data + "\n\n");
+		ServerField.append(">>Sent Decrypted: " + Data + "\n");
                 ServerField.append(">>Sent Encrypted: " + ciphertext + "\n\n");
                 writer.flush();
                 ServerField.setCaretPosition(ServerField.getDocument().getLength());

@@ -494,10 +494,9 @@ public class Client extends javax.swing.JFrame
         if(ClientOnline == false){
             Guest_Field.setText("");
             String LetsTalk="LetsTalk";
-            Random generator = new Random(); 
-            int i = generator.nextInt(999) + 1;
-            String is=String.valueOf(i);
-            LetsTalk=LetsTalk.concat(is);
+            Random gen = new Random(); 
+            int x = gen.nextInt(888) + 1;
+            LetsTalk=LetsTalk.concat(String.valueOf(x));
             ClientName=LetsTalk;
             
             Guest_Field.setText(LetsTalk);

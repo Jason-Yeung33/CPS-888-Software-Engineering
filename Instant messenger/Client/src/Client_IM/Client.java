@@ -1,5 +1,9 @@
 package Client_IM;
 
+import javax.crypto.*;
+import java.security.*;
+import javax.crypto.spec.DESKeySpec;
+
 import instant.messenger.My_Connection;
 import java.awt.event.KeyEvent;
 import java.net.*;
@@ -20,13 +24,48 @@ public class Client extends javax.swing.JFrame
     Socket ClientSocket;
     BufferedReader BufferReader;
     ArrayList<String> userNames = new ArrayList();    
-    
+    String Stringkey= "com.sun.crypto.provider.DESKey@fffe7840";
+    SecretKey key;
+    Cipher encrypt;
+    Cipher decrypt;
+    String ciphertext;
+    String cleartext;
+    byte[] cleartext_Bytes;
+    byte[] ciphertext_Bytes;
+   
     public Client(){
+
         initComponents();
+                            
+            try 
+            {
+                //key = KeyGenerator.getInstance("DES").generateKey();
+                System.out.println(Stringkey);
+                         
+                DESKeySpec dks = new DESKeySpec(Stringkey.getBytes());
+                SecretKeyFactory skf = SecretKeyFactory.getInstance("DES");
+                key = skf.generateSecret(dks);
+                System.out.println(key);
+                 
+                //Create Cipher objects using .getInstance Methods with DES
+                encrypt = Cipher.getInstance("DES");
+                decrypt = Cipher.getInstance("DES");
+
+                //Initialize Cipher modes with generated key
+                //  ENCRYPT_MODE = Encryption of Data
+                //  DECRYPT_MODE = Descryption o Data
+                encrypt.init(Cipher.ENCRYPT_MODE, key);
+                decrypt.init(Cipher.DECRYPT_MODE, key);
+            }
+            catch (Exception ex)
+            {
+                Chat_Box.append("ERROR\n");
+            }
     }
     
     public static void main(String args[]) 
     {
+        
         java.awt.EventQueue.invokeLater(new Runnable() { @Override public void run() { new Client().setVisible(true); }});
     }
     
@@ -38,10 +77,17 @@ public class Client extends javax.swing.JFrame
             String[] SplitData;
             String stream, done = "Done";
             String[] SplitData2;
+
+            
+            
             try 
             {
                 while ((stream = BufferReader.readLine()) != null) 
                 {
+                    ciphertext_Bytes = new sun.misc.BASE64Decoder().decodeBuffer(stream);
+                    cleartext_Bytes = decrypt.doFinal(ciphertext_Bytes);
+                    cleartext = new String(cleartext_Bytes, "UTF8");
+                    stream = cleartext;
                     SplitData = stream.split(":");
                     switch(SplitData[2])
                     {
@@ -112,7 +158,10 @@ public class Client extends javax.swing.JFrame
             String bye = (ClientName + ":logged out. :D");
         
             try{
-                PrintWriter.println(bye); 
+                cleartext_Bytes = bye.getBytes("UTF8");
+                ciphertext_Bytes= encrypt.doFinal(cleartext_Bytes);
+                ciphertext = new sun.misc.BASE64Encoder().encode(ciphertext_Bytes);
+                PrintWriter.println(ciphertext); 
                 PrintWriter.flush();             
             }catch (Exception e){
                 Chat_Box.append("ERROR\n");
@@ -406,7 +455,10 @@ public class Client extends javax.swing.JFrame
                              InputStreamReader streamreader = new InputStreamReader(ClientSocket.getInputStream());
                             BufferReader = new BufferedReader(streamreader);
                             PrintWriter = new PrintWriter(ClientSocket.getOutputStream());
-                            PrintWriter.println(ClientName + ":logged in. :C");
+                            cleartext_Bytes = (ClientName + ":logged in. :C").getBytes("UTF8");
+                            ciphertext_Bytes= encrypt.doFinal(cleartext_Bytes);
+                            ciphertext = new sun.misc.BASE64Encoder().encode(ciphertext_Bytes);
+                            PrintWriter.println(ciphertext);
                             PrintWriter.flush();
                             ClientOnline = true;
                             Username_Field.setEditable(false);
@@ -456,7 +508,11 @@ public class Client extends javax.swing.JFrame
                 InputStreamReader streamreader = new InputStreamReader(ClientSocket.getInputStream());
                 BufferReader = new BufferedReader(streamreader);
                 PrintWriter = new PrintWriter(ClientSocket.getOutputStream());
-                PrintWriter.println(LetsTalk + ":logged in. :C");
+                
+                cleartext_Bytes = (ClientName + ":logged in. :C").getBytes("UTF8");
+                ciphertext_Bytes= encrypt.doFinal(cleartext_Bytes);
+                ciphertext = new sun.misc.BASE64Encoder().encode(ciphertext_Bytes);      
+                PrintWriter.println(ciphertext);
                 PrintWriter.flush(); 
                 ClientOnline = true;
                 User_Login.setEnabled(false);
@@ -481,7 +537,10 @@ public class Client extends javax.swing.JFrame
             Chat_Field.requestFocus();
         }else{
             try{
-               PrintWriter.println(ClientName + ":" + Chat_Field.getText() + ":" + "T");
+                cleartext_Bytes = (ClientName + ":" + Chat_Field.getText() + ":" + "T").getBytes("UTF8");
+                ciphertext_Bytes= encrypt.doFinal(cleartext_Bytes);
+                ciphertext = new sun.misc.BASE64Encoder().encode(ciphertext_Bytes);      
+               PrintWriter.println(ciphertext);
                PrintWriter.flush(); // flushes the buffer
             }catch (Exception ex){
                 Chat_Box.append("Message was not sent. \n");
@@ -530,7 +589,10 @@ public class Client extends javax.swing.JFrame
                                 InputStreamReader streamreader = new InputStreamReader(ClientSocket.getInputStream());
                                 BufferReader = new BufferedReader(streamreader);
                                 PrintWriter = new PrintWriter(ClientSocket.getOutputStream());
-                                PrintWriter.println(ClientName + ":logged in. :C");
+                                cleartext_Bytes = (ClientName + ":logged in. :C").getBytes("UTF8");
+                                ciphertext_Bytes= encrypt.doFinal(cleartext_Bytes);
+                                ciphertext = new sun.misc.BASE64Encoder().encode(ciphertext_Bytes); 
+                                PrintWriter.println(ciphertext);
                                 PrintWriter.flush();
                                 ClientOnline = true;
                             }
@@ -572,7 +634,11 @@ public class Client extends javax.swing.JFrame
                 Chat_Field.requestFocus();
             }else{
                 try{
-                    PrintWriter.println(ClientName + ":" + Chat_Field.getText() + ":" + "T");
+                    cleartext_Bytes = (ClientName + ":" + Chat_Field.getText() + ":" + "T").getBytes("UTF8");
+                    ciphertext_Bytes= encrypt.doFinal(cleartext_Bytes);
+                    ciphertext = new sun.misc.BASE64Encoder().encode(ciphertext_Bytes); 
+                                
+                    PrintWriter.println(ciphertext);
                     PrintWriter.flush(); // flushes the buffer
                 }catch (Exception ex){
                     Chat_Box.append("Message was not sent. \n");

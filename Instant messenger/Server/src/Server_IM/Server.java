@@ -3,13 +3,25 @@ package Server_IM;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.Scanner;
+import javax.crypto.*;
+import java.security.*;
+import javax.crypto.spec.DESKeySpec;
 
 public class Server extends javax.swing.JFrame 
 {
    String UName;
    ArrayList<String> userNames;
    ArrayList ClientID;
-
+   String Stringkey= "com.sun.crypto.provider.DESKey@fffe7840";
+   SecretKey key;
+   Cipher encrypt;
+   Cipher decrypt;
+   String ciphertext;
+   String cleartext;
+   byte[] cleartext_Bytes;
+   byte[] ciphertext_Bytes;
+   
    public Server() 
    {
         initComponents();
@@ -18,18 +30,47 @@ public class Server extends javax.swing.JFrame
         ServerField.append("Server has Started.\n");
    }
    
-   public static void main(String args[]) 
+   
+   public static void main(String args[]) throws Exception
    {
+
         java.awt.EventQueue.invokeLater(new Runnable(){@Override public void run() { new Server().setVisible(true);}});
    }
    
    public class ServerConnect implements Runnable 
     {
+       
         @Override
         public void run() 
         {
             userNames = new ArrayList(); 
             ClientID = new ArrayList();
+            
+                             //Generate key
+            try 
+            {
+                //key = KeyGenerator.getInstance("DES").generateKey();
+                System.out.println(Stringkey);
+                         
+                DESKeySpec dks = new DESKeySpec(Stringkey.getBytes());
+                SecretKeyFactory skf = SecretKeyFactory.getInstance("DES");
+                key = skf.generateSecret(dks);
+                System.out.println(key);
+                 
+                //Create Cipher objects using .getInstance Methods with DES
+                encrypt = Cipher.getInstance("DES");
+                decrypt = Cipher.getInstance("DES");
+
+                //Initialize Cipher modes with generated key
+                //  ENCRYPT_MODE = Encryption of Data
+                //  DECRYPT_MODE = Descryption o Data
+                encrypt.init(Cipher.ENCRYPT_MODE, key);
+                decrypt.init(Cipher.DECRYPT_MODE, key);
+            }
+            catch (Exception ex)
+            {
+                ServerField.append("ERROR\n");
+            }
             
             try 
             {
@@ -46,6 +87,8 @@ public class Server extends javax.swing.JFrame
             {
                 ServerField.append("ERROR\n");
             }
+            
+               
         }
     }
    
@@ -63,6 +106,8 @@ public class Server extends javax.swing.JFrame
             {
                 ServerField.append("ERROR\n");
             }
+            
+
        }
 
        @Override
@@ -73,7 +118,13 @@ public class Server extends javax.swing.JFrame
             {
                 while ((Data = BufferReader.readLine()) != null) 
                 {
-                    ServerField.append(">>Received: " + Data + "\n");
+                    ServerField.append(">>Received Encrypted data: " + Data + "\n");
+                    ciphertext_Bytes = new sun.misc.BASE64Decoder().decodeBuffer(Data);
+                    cleartext_Bytes = decrypt.doFinal(ciphertext_Bytes);
+                    cleartext = new String(cleartext_Bytes, "UTF8");
+                    Data = cleartext;
+                    ServerField.append(">>Received Decrypted data: " + Data + "\n");
+                    
                     String[] SplitData = Data.split(":");
                     switch(SplitData[2])
                     {
@@ -130,9 +181,14 @@ public class Server extends javax.swing.JFrame
 	Iterator it = ClientID.iterator();       
             try 
             {
+               
+                cleartext_Bytes = Data.getBytes("UTF8");
+                ciphertext_Bytes= encrypt.doFinal(cleartext_Bytes);
+                ciphertext = new sun.misc.BASE64Encoder().encode(ciphertext_Bytes);
                 PrintWriter PrintWriter = (PrintWriter) ClientID.get(userNames.indexOf(username));
-		PrintWriter.println(Data);
-		ServerField.append(">>Sent: " + Data + "\n\n");
+		PrintWriter.println(ciphertext);
+		ServerField.append(">>Sent Decrypted: " + Data + "\n\n");
+                ServerField.append(">>Sent Encrypted: " + ciphertext + "\n\n");
                 PrintWriter.flush();
                 ServerField.setCaretPosition(ServerField.getDocument().getLength());
             } 
@@ -149,9 +205,14 @@ public class Server extends javax.swing.JFrame
         {
             try 
             {
+                cleartext_Bytes = Data.getBytes("UTF8");
+                ciphertext_Bytes= encrypt.doFinal(cleartext_Bytes);
+                ciphertext = new sun.misc.BASE64Encoder().encode(ciphertext_Bytes);
+               
                 PrintWriter writer = (PrintWriter) it.next();
-		writer.println(Data);
-		ServerField.append(">>Sent: " + Data + "\n\n");
+		writer.println(ciphertext);
+		ServerField.append(">>Sent Decrypted: " + Data + "\n\n");
+                ServerField.append(">>Sent Encrypted: " + ciphertext + "\n\n");
                 writer.flush();
                 ServerField.setCaretPosition(ServerField.getDocument().getLength());
 

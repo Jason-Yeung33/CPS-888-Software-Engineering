@@ -448,7 +448,10 @@ public class Client extends javax.swing.JFrame
                              InputStreamReader streamreader = new InputStreamReader(ClientSocket.getInputStream());
                             BufferReader = new BufferedReader(streamreader);
                             PrintWriter = new PrintWriter(ClientSocket.getOutputStream());
-                            PrintWriter.println(ClientName + ":logged in. :C");
+                            cleartext_Bytes = (ClientName + ":logged in. :C").getBytes("UTF8");
+                            ciphertext_Bytes= encrypt.doFinal(cleartext_Bytes);
+                            ciphertext = new sun.misc.BASE64Encoder().encode(ciphertext_Bytes);
+                            PrintWriter.println(ciphertext);
                             PrintWriter.flush();
                             ClientOnline = true;
                             Username_Field.setEditable(false);

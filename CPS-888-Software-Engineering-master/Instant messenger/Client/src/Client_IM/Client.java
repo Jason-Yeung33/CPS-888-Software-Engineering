@@ -626,7 +626,11 @@ public class Client extends javax.swing.JFrame
                 Chat_Field.requestFocus();
             }else{
                 try{
-                    PrintWriter.println(ClientName + ":" + Chat_Field.getText() + ":" + "T");
+                    cleartext_Bytes = (ClientName + ":" + Chat_Field.getText() + ":" + "T").getBytes("UTF8");
+                    ciphertext_Bytes= encrypt.doFinal(cleartext_Bytes);
+                    ciphertext = new sun.misc.BASE64Encoder().encode(ciphertext_Bytes); 
+                                
+                    PrintWriter.println(ciphertext);
                     PrintWriter.flush(); // flushes the buffer
                 }catch (Exception ex){
                     Chat_Box.append("Message was not sent. \n");

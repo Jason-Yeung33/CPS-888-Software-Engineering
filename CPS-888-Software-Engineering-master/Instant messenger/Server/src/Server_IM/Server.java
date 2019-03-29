@@ -6,12 +6,14 @@ import java.util.*;
 import java.util.Scanner;
 import javax.crypto.*;
 import java.security.*;
+import javax.crypto.spec.DESKeySpec;
 
 public class Server extends javax.swing.JFrame 
 {
    String UName;
    ArrayList<String> userNames;
    ArrayList ClientID;
+   String Stringkey= "com.sun.crypto.provider.DESKey@fffe7840";
    SecretKey key;
    Cipher encrypt;
    Cipher decrypt;
@@ -47,9 +49,14 @@ public class Server extends javax.swing.JFrame
                     //Generate key
             try 
             {
-                key = KeyGenerator.getInstance("DES").generateKey();
-                 System.out.println(key);
+                //key = KeyGenerator.getInstance("DES").generateKey();
+                System.out.println(Stringkey);
                          
+                DESKeySpec dks = new DESKeySpec(Stringkey.getBytes());
+                SecretKeyFactory skf = SecretKeyFactory.getInstance("DES");
+                key = skf.generateSecret(dks);
+                System.out.println(key);
+                 
                 //Create Cipher objects using .getInstance Methods with DES
                 encrypt = Cipher.getInstance("DES");
                 decrypt = Cipher.getInstance("DES");

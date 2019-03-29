@@ -34,23 +34,9 @@ public class Client extends javax.swing.JFrame
     byte[] ciphertext_Bytes;
    
     public Client(){
+
         initComponents();
-    }
-    
-    public static void main(String args[]) 
-    {
-        java.awt.EventQueue.invokeLater(new Runnable() { @Override public void run() { new Client().setVisible(true); }});
-    }
-    
-    public class ClientCommunication implements Runnable
-    {
-        @Override
-        public void run() 
-        {
-            String[] SplitData;
-            String stream, done = "Done";
-            String[] SplitData2;
-            
+                            
             try 
             {
                 //key = KeyGenerator.getInstance("DES").generateKey();
@@ -75,6 +61,23 @@ public class Client extends javax.swing.JFrame
             {
                 Chat_Box.append("ERROR\n");
             }
+    }
+    
+    public static void main(String args[]) 
+    {
+        
+        java.awt.EventQueue.invokeLater(new Runnable() { @Override public void run() { new Client().setVisible(true); }});
+    }
+    
+    public class ClientCommunication implements Runnable
+    {
+        @Override
+        public void run() 
+        {
+            String[] SplitData;
+            String stream, done = "Done";
+            String[] SplitData2;
+
             
             
             try 
@@ -505,7 +508,8 @@ public class Client extends javax.swing.JFrame
                 InputStreamReader streamreader = new InputStreamReader(ClientSocket.getInputStream());
                 BufferReader = new BufferedReader(streamreader);
                 PrintWriter = new PrintWriter(ClientSocket.getOutputStream());
-                cleartext_Bytes = (LetsTalk + ":logged in. :C").getBytes("UTF8");
+                
+                cleartext_Bytes = (ClientName + ":logged in. :C").getBytes("UTF8");
                 ciphertext_Bytes= encrypt.doFinal(cleartext_Bytes);
                 ciphertext = new sun.misc.BASE64Encoder().encode(ciphertext_Bytes);      
                 PrintWriter.println(ciphertext);

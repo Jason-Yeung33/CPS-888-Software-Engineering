@@ -46,7 +46,7 @@ public class Server extends javax.swing.JFrame
             userNames = new ArrayList(); 
             ClientID = new ArrayList();
             
-                    //Generate key
+                             //Generate key
             try 
             {
                 //key = KeyGenerator.getInstance("DES").generateKey();
@@ -87,6 +87,8 @@ public class Server extends javax.swing.JFrame
             {
                 ServerField.append("ERROR\n");
             }
+            
+               
         }
     }
    
@@ -116,12 +118,13 @@ public class Server extends javax.swing.JFrame
             {
                 while ((Data = BufferReader.readLine()) != null) 
                 {
-                   
+                    ServerField.append(">>Received Encrypted data: " + Data + "\n");
                     ciphertext_Bytes = new sun.misc.BASE64Decoder().decodeBuffer(Data);
                     cleartext_Bytes = decrypt.doFinal(ciphertext_Bytes);
                     cleartext = new String(cleartext_Bytes, "UTF8");
                     Data = cleartext;
-                    ServerField.append(">>Received: " + Data + "\n");
+                    ServerField.append(">>Received Decrypted data: " + Data + "\n");
+                    
                     String[] SplitData = Data.split(":");
                     switch(SplitData[2])
                     {
@@ -184,7 +187,8 @@ public class Server extends javax.swing.JFrame
                 ciphertext = new sun.misc.BASE64Encoder().encode(ciphertext_Bytes);
                 PrintWriter PrintWriter = (PrintWriter) ClientID.get(userNames.indexOf(username));
 		PrintWriter.println(ciphertext);
-		ServerField.append(">>Sent: " + Data + "\n\n");
+		ServerField.append(">>Sent Decrypted: " + Data + "\n\n");
+                ServerField.append(">>Sent Encrypted: " + ciphertext + "\n\n");
                 PrintWriter.flush();
                 ServerField.setCaretPosition(ServerField.getDocument().getLength());
             } 
@@ -207,7 +211,8 @@ public class Server extends javax.swing.JFrame
                
                 PrintWriter writer = (PrintWriter) it.next();
 		writer.println(ciphertext);
-		ServerField.append(">>Sent: " + Data + "\n\n");
+		ServerField.append(">>Sent Decrypted: " + Data + "\n\n");
+                ServerField.append(">>Sent Encrypted: " + ciphertext + "\n\n");
                 writer.flush();
                 ServerField.setCaretPosition(ServerField.getDocument().getLength());
 

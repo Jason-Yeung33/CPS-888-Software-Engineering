@@ -16,6 +16,10 @@ public class Server extends javax.swing.JFrame
    Cipher encrypt;
    Cipher decrypt;
    String ciphertext;
+   String cleartext;
+   byte[] cleartext_Bytes;
+   byte[] ciphertext_Bytes;
+   
    public Server() 
    {
         initComponents();
@@ -72,7 +76,7 @@ public class Server extends javax.swing.JFrame
                 ServerField.append("ERROR\n");
             }
             
-                           //Generate key
+        //Generate key
         try 
             {
                 key = KeyGenerator.getInstance("DES").generateKey();
@@ -157,8 +161,12 @@ public class Server extends javax.swing.JFrame
 	Iterator it = ClientID.iterator();       
             try 
             {
+               
+                cleartext_Bytes = Data.getBytes("UTF8");
+                ciphertext_Bytes= encrypt.doFinal(cleartext_Bytes);
+                ciphertext = new sun.misc.BASE64Encoder().encode(ciphertext_Bytes);
                 PrintWriter PrintWriter = (PrintWriter) ClientID.get(userNames.indexOf(username));
-		PrintWriter.println(Data);
+		PrintWriter.println(ciphertext);
 		ServerField.append(">>Sent: " + Data + "\n\n");
                 PrintWriter.flush();
                 ServerField.setCaretPosition(ServerField.getDocument().getLength());

@@ -53,7 +53,7 @@ public class HomeScreen extends javax.swing.JFrame {
         jLabel1.setText("LetsTalk");
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel2.setText("The only place to talk with your friends");
+        jLabel2.setText("The best place to talk with your friends");
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel3.setText("Get Started");

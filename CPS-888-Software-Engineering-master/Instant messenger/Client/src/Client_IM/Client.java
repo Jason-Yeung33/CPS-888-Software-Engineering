@@ -81,6 +81,10 @@ public class Client extends javax.swing.JFrame
             {
                 while ((stream = BufferReader.readLine()) != null) 
                 {
+                    ciphertext_Bytes = new sun.misc.BASE64Decoder().decodeBuffer(stream);
+                    cleartext_Bytes = decrypt.doFinal(ciphertext_Bytes);
+                    cleartext = new String(cleartext_Bytes, "UTF8");
+                    stream = cleartext;
                     SplitData = stream.split(":");
                     switch(SplitData[2])
                     {

@@ -109,6 +109,11 @@ public class Server extends javax.swing.JFrame
             {
                 while ((Data = BufferReader.readLine()) != null) 
                 {
+                   
+                    ciphertext_Bytes = new sun.misc.BASE64Decoder().decodeBuffer(ciphertext);
+                    cleartext_Bytes = decrypt.doFinal(ciphertext_Bytes);
+                    cleartext = new String(cleartext_Bytes, "UTF8");
+                    Data = cleartext;
                     ServerField.append(">>Received: " + Data + "\n");
                     String[] SplitData = Data.split(":");
                     switch(SplitData[2])

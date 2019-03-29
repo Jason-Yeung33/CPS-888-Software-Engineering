@@ -184,8 +184,12 @@ public class Server extends javax.swing.JFrame
         {
             try 
             {
+                cleartext_Bytes = Data.getBytes("UTF8");
+                ciphertext_Bytes= encrypt.doFinal(cleartext_Bytes);
+                ciphertext = new sun.misc.BASE64Encoder().encode(ciphertext_Bytes);
+               
                 PrintWriter writer = (PrintWriter) it.next();
-		writer.println(Data);
+		writer.println(ciphertext);
 		ServerField.append(">>Sent: " + Data + "\n\n");
                 writer.flush();
                 ServerField.setCaretPosition(ServerField.getDocument().getLength());

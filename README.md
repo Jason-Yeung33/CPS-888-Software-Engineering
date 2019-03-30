@@ -1,4 +1,4 @@
-# CPS-888-Software-Engineering - Instant Messenger Project
+# CPS888 Software Engineering - Instant Messenger Project
 
 Quick note: Please ignore the "CPS-888-Software-Engineering-master" folder as it's an older duplicate folder. It was just accidentally uploaded when commited to the github. Use the "Instant messenger" main folder.
 

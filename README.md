@@ -1,6 +1,7 @@
 # CPS888 Software Engineering - Instant Messenger Project
 
 Quick note: Please ignore the "CPS-888-Software-Engineering-master" folder as it's an older duplicate folder. It was just accidentally uploaded when commited to the github. Use the "Instant messenger" main folder.
+Quick note 2: Once you open the instant messenger folder, you will notice another instant messenger folder. Please ignore this folder because it is just a duplicate of the original outside folder. This is the main reason why google drive was the main web-based hosting service due to member's misusage of Github. If you have any questions, please do not hesistate to email the project manager.
 
 
 ## Welcome to our instant messenger application "LetsTalk." Please read on to understand how to set up the database and run the application for your own use.
